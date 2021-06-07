@@ -1,24 +1,31 @@
 package com.nguyenvanlong.quiz;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nguyenvanlong.quiz.database.DBHelper;
 import com.nguyenvanlong.quiz.models.Question;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
     DBHelper dbHelper;
-    TextView txtContent, txtQuestion, txtCaseA, txtCaseB, txtCaseC, txtCaseD;
+    TextView txtContent, txtQuestion, txtCaseA, txtCaseB, txtCaseC, txtCaseD, txtTime;
     ArrayList<Question> listQuestions;
     int id1, trueCase, number, count = 0;
+    CountDownTimer Timer;
 
     //Question question;
 
@@ -33,14 +40,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         addEvents();
     }
 
-    private void addEvents() {
-
-        txtCaseA.setOnClickListener(this);
-        txtCaseB.setOnClickListener(this);
-        txtCaseC.setOnClickListener(this);
-        txtCaseD.setOnClickListener(this);
-    }
-
     private void linkViews() {
         txtContent = findViewById(R.id.txtContent);
         txtQuestion = findViewById(R.id.txtQuestion);
@@ -48,11 +47,20 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         txtCaseB = findViewById(R.id.txtCaseB);
         txtCaseC = findViewById(R.id.txtCaseC);
         txtCaseD = findViewById(R.id.txtCaseD);
+        txtTime = findViewById(R.id.txtTime);
 
         listQuestions = dbHelper.getData();
         //question = listQuestions.get(count);
     }
 
+    private void addEvents() {
+
+        txtCaseA.setOnClickListener(this);
+        txtCaseB.setOnClickListener(this);
+        txtCaseC.setOnClickListener(this);
+        txtCaseD.setOnClickListener(this);
+    }
+    //Hiển thị câu hỏi
     public void LoadQuestion(Question question) {
 
         txtCaseA.setBackgroundResource(R.drawable.bg_ans_corner);
@@ -69,6 +77,42 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         txtCaseC.setText("C. " + question.getCaseC());
         txtCaseD.setText("D. " + question.getCaseD());
         trueCase(question);
+
+        // Bộ đếm thời gian cho mỗi câu hỏi
+        Timer = new CountDownTimer(20000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                txtTime.setText(millisUntilFinished/1000 + "s");
+            }
+
+            @Override
+            public void onFinish() {
+                txtTime.setText("Hết giờ!");
+
+                if(count > 0){
+                    showDialog("Bạn đã trả lời đúng" + count + " câu.");
+                }
+                else {
+                    showDialog("Rất tiếc! Bạn đã hết thời gian.");
+                }
+            }
+        }.start();
+    }
+
+    public void showDialog(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(PlayActivity.this);
+        builder.setTitle("Hết giờ!");
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     // gán đáp án đúng cho mỗi câu hỏi
@@ -106,11 +150,11 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     // nếu chọn đúng đáp án
                     if (v.getId() == trueCase) {
 
+                        Timer.cancel();     // Hủy bộ đếm khi sang câu mới
                         v.setBackgroundResource(R.drawable.bg_true_corner);
 
                         if(count < listQuestions.size() - 1){
                             count++;
-
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -119,8 +163,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             },1000);
                         }
                     }
-//                    count++;
-//                    LoadQuestion(listQuestions.get(count));
+
                     // nếu chọn sai đáp án
                     else {
 
@@ -142,6 +185,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                                 txtCaseD.setBackgroundResource(R.drawable.bg_true_corner);
                                 break;
                         }
+                        //Hiển thị dialog thông báo
                         try{
                             Thread.sleep(1000);
                             final Dialog dialog = new Dialog(PlayActivity.this, R.style.cust_dialog);
@@ -150,7 +194,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box);
 
                             TextView text = dialog.findViewById(R.id.txtDialog);
-                            text.setText("Thật tiếc bạn đã thua!");
+                            text.setText("Thật tiếc bạn đã trả lời sai!");
 
                             TextView diem = dialog.findViewById(R.id.txtDiem);
                             diem.setText("Bạn trả lời đúng " + count + " câu.");
@@ -175,4 +219,5 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             }, 1000);
         }
     }
+
 }
