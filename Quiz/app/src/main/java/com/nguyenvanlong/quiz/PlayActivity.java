@@ -1,12 +1,12 @@
 package com.nguyenvanlong.quiz;
 
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.nguyenvanlong.quiz.database.DBHelper;
@@ -102,11 +102,11 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+
                     // nếu chọn đúng đáp án
                     if (v.getId() == trueCase) {
-                        //v.setEnabled(true);
+
                         v.setBackgroundResource(R.drawable.bg_true_corner);
-                        showDialog("Chúc mừng bạn đẫ trả lời đúng!!!");
 
                         if(count < listQuestions.size() - 1){
                             count++;
@@ -142,30 +142,37 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                                 txtCaseD.setBackgroundResource(R.drawable.bg_true_corner);
                                 break;
                         }
-                        try {
-                            showDialog("Rất tiếc bạn đã trả lời sai!!!");
-                        } catch (Exception e) {
+                        try{
+                            Thread.sleep(1000);
+                            final Dialog dialog = new Dialog(PlayActivity.this, R.style.cust_dialog);
+                            dialog.setContentView(R.layout.finish_dialog);
+                            dialog.setTitle("Thông báo!!!");
+                            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box);
+
+                            TextView text = dialog.findViewById(R.id.txtDialog);
+                            text.setText("Thật tiếc bạn đã thua!");
+
+                            TextView diem = dialog.findViewById(R.id.txtDiem);
+                            diem.setText("Bạn trả lời đúng " + count + " câu.");
+
+                            dialog.setCancelable(false);
+                            dialog.show();
+
+                            Button btnOk = dialog.findViewById(R.id.btn_ok_finish);
+                            btnOk.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                 }
             }, 1000);
         }
-    }
-
-    public void showDialog(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                count = 0;
-                LoadQuestion(listQuestions.get(count));
-                dialog.dismiss();
-            }
-        });
-
     }
 }
