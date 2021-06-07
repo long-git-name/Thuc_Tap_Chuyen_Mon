@@ -1,11 +1,13 @@
 package com.nguyenvanlong.quiz;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LevelActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,6 +38,24 @@ public class LevelActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        startActivity(new Intent(LevelActivity.this, PlayActivity.class));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Bạn đã sẵn sàng bắt đầu trò chơi?");
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(LevelActivity.this, PlayActivity.class));
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
