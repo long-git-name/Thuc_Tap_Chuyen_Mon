@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 
+import com.nguyenvanlong.quiz.R;
 import com.nguyenvanlong.quiz.models.Question;
+import com.nguyenvanlong.quiz.LevelActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,6 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH ="";
     private final Context myContext;
     public static final String TABLE_NAME="Question";
+    LevelActivity levelActivity;
 
     public static SQLiteDatabase database = null;
 
@@ -65,28 +68,31 @@ public class DBHelper extends SQLiteOpenHelper {
             outputStream.close();
             inputStream.close();
     }
+
     public ArrayList<Question> getData(){
         database = myContext.openOrCreateDatabase(DB_NAME,Context.MODE_PRIVATE,null);
         ArrayList<Question> questionArrayList = new ArrayList<>();
-        for (int i = 1; i < 6; i++) {
-            String table = TABLE_NAME + i + "";
-            String sql = "SELECT * FROM " + table + " ORDER BY random() ";
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor cursor = db.rawQuery(sql, null);
-            questionArrayList.clear();
-            while (cursor.moveToNext()){
-                int id=cursor.getInt(0);
-                String question= cursor.getString(1);
-                String caseA= cursor.getString(2);
-                String caseB= cursor.getString(3);
-                String caseC= cursor.getString(4);
-                String caseD= cursor.getString(5);
-                int trueCase= cursor.getInt(6);
-                Question question1=new Question(id, question, caseA, caseB, caseC, caseD, trueCase);
-                questionArrayList.add(question1);
+            for (int i = 1; i < 6;) {
+
+                String table = TABLE_NAME + i + "";
+                String sql = "SELECT * FROM " + table + " ORDER BY random() ";
+                SQLiteDatabase db = this.getReadableDatabase();
+                Cursor cursor = db.rawQuery(sql, null);
+                questionArrayList.clear();
+                while (cursor.moveToNext()) {
+                    int id = cursor.getInt(0);
+                    String question = cursor.getString(1);
+                    String caseA = cursor.getString(2);
+                    String caseB = cursor.getString(3);
+                    String caseC = cursor.getString(4);
+                    String caseD = cursor.getString(5);
+                    int trueCase = cursor.getInt(6);
+                    Question question1 = new Question(id, question, caseA, caseB, caseC, caseD, trueCase);
+                    questionArrayList.add(question1);
+                }
+                cursor.close();
+                break;
             }
-            cursor.close();
-        }
         return questionArrayList;
     }
 
