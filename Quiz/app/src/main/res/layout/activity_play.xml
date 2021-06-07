@@ -7,6 +7,17 @@
     android:gravity="center"
     android:background="@drawable/bg_start">
 
+    <TextView
+        android:id="@+id/txtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_gravity="end"
+        android:background="@drawable/bg_time"/>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
