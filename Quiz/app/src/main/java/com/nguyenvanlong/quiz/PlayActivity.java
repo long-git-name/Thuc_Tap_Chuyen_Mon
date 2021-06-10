@@ -166,7 +166,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                     // nếu chọn sai đáp án
                     else {
-
+                        Timer.cancel();
                         switch (trueCase) {
                             case R.id.txtCaseA:
                                 v.setBackgroundResource(R.drawable.bg_false_corner);
