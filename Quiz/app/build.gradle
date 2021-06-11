@@ -43,4 +43,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    
+    // add libr foldingcell
+    implementation 'com.ramotion.foldingcell:folding-cell:1.2.2'
 }
