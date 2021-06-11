@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="?android:attr/colorControlHighlight"
+        tools:targetApi="lollipop" />
+    <corners android:radius="@android:dimen/app_icon_size"/>
+
+</shape>
