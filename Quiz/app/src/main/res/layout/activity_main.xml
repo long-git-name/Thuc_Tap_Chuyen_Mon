@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
     android:gravity="center"
     android:padding="10dp"
@@ -14,13 +15,15 @@
     <com.ramotion.foldingcell.FoldingCell
         android:id="@+id/folding_cell"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:backSideColor="?android:attr/colorControlHighlight"
+        tools:targetApi="lollipop">
 
         <FrameLayout
             android:id="@+id/cell_content_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_ques_corner"
+            android:background="@drawable/bg_folding"
             android:visibility="gone">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,7 +116,7 @@
                 android:textSize="28sp"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:background="@drawable/bg_ques_corner" />
+                android:background="@drawable/bg_folding_title" />
         </FrameLayout>
     </com.ramotion.foldingcell.FoldingCell>
 
