@@ -1,9 +1,8 @@
 package com.nguyenvanlong.quiz;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -18,7 +17,6 @@ import com.nguyenvanlong.quiz.database.DBHelper;
 import com.nguyenvanlong.quiz.models.Question;
 
 import java.util.ArrayList;
-import java.util.Timer;
 
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
     DBHelper dbHelper;
@@ -77,7 +75,10 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         txtCaseC.setText("C. " + question.getCaseC());
         txtCaseD.setText("D. " + question.getCaseD());
         trueCase(question);
+        timer();
+    }
 
+    public void timer(){
         // Bộ đếm thời gian cho mỗi câu hỏi
         Timer = new CountDownTimer(20000, 1000) {
             @Override
@@ -88,31 +89,21 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinish() {
                 txtTime.setText("Hết giờ!");
-
-                if(count > 0){
-                    showDialog("Bạn đã trả lời đúng" + count + " câu.");
-                }
-                else {
-                    showDialog("Rất tiếc! Bạn đã hết thời gian.");
+                if(count > 0) {
+                    try {
+                        gameOver(0, "Rất tiếc! Bạn đã hết thời gian.", "Bạn trả lời đúng " + count + " câu.");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }else {
+                    try {
+                        gameOver(0, "Rất tiếc! Bạn đã hết thời gian.", "");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }.start();
-    }
-
-    public void showDialog(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(PlayActivity.this);
-        builder.setTitle("Hết giờ!");
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     // gán đáp án đúng cho mỗi câu hỏi
@@ -185,39 +176,46 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                                 txtCaseD.setBackgroundResource(R.drawable.bg_true_corner);
                                 break;
                         }
-                        //Hiển thị dialog thông báo
-                        try{
-                            Thread.sleep(1000);
-                            final Dialog dialog = new Dialog(PlayActivity.this, R.style.cust_dialog);
-                            dialog.setContentView(R.layout.finish_dialog);
-                            dialog.setTitle("Thông báo!!!");
-                            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box);
-
-                            TextView text = dialog.findViewById(R.id.txtDialog);
-                            text.setText("Thật tiếc bạn đã trả lời sai!");
-
-                            TextView diem = dialog.findViewById(R.id.txtDiem);
-                            diem.setText("Bạn trả lời đúng " + count + " câu.");
-
-                            dialog.setCancelable(false);
-                            dialog.show();
-
-                            Button btnOk = dialog.findViewById(R.id.btn_ok_finish);
-                            btnOk.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            });
-
+                            //Hiển thị dialog thông báo
+                        try {
+                            gameOver(1000,"Thật tiếc bạn đã trả lời sai!","Bạn trả lời đúng " + count + " câu.");
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+
                     }
                 }
             }, 1000);
         }
+    }
+
+        //Dialog thông báo
+    public void gameOver(Integer time,String message1, String message2) throws InterruptedException {
+
+        Thread.sleep(time);
+
+        final Dialog dialog = new Dialog(PlayActivity.this, R.style.cust_dialog);
+        dialog.setContentView(R.layout.finish_dialog);
+
+        dialog.setTitle("Thông báo!!!");
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box);
+
+        TextView text = dialog.findViewById(R.id.txtDialog);
+        text.setText(message1);
+
+        TextView diem = dialog.findViewById(R.id.txtDiem);
+        diem.setText(message2);
+
+        dialog.setCancelable(false);
+        Button btnOk = dialog.findViewById(R.id.btn_ok_finish);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        dialog.show();
     }
 
 }
