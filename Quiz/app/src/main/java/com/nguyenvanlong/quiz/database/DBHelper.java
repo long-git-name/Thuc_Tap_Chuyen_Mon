@@ -6,9 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 
+import com.nguyenvanlong.quiz.MainActivity;
 import com.nguyenvanlong.quiz.R;
 import com.nguyenvanlong.quiz.models.Question;
-import com.nguyenvanlong.quiz.LevelActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,14 +17,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import static com.nguyenvanlong.quiz.MainActivity.getTableName;
+
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "question.sqlite";
     private static String DB_PATH ="";
     private final Context myContext;
     public static final String TABLE_NAME="Question";
-    LevelActivity levelActivity;
-
     public static SQLiteDatabase database = null;
+
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, 1);
@@ -72,27 +73,18 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<Question> getData(){
         database = myContext.openOrCreateDatabase(DB_NAME,Context.MODE_PRIVATE,null);
         ArrayList<Question> questionArrayList = new ArrayList<>();
-            for (int i = 1; i < 6;) {
 
-                String table = TABLE_NAME + i + "";
-                String sql = "SELECT * FROM " + table + " ORDER BY random() ";
-                SQLiteDatabase db = this.getReadableDatabase();
-                Cursor cursor = db.rawQuery(sql, null);
-                questionArrayList.clear();
-                while (cursor.moveToNext()) {
-                    int id = cursor.getInt(0);
-                    String question = cursor.getString(1);
-                    String caseA = cursor.getString(2);
-                    String caseB = cursor.getString(3);
-                    String caseC = cursor.getString(4);
-                    String caseD = cursor.getString(5);
-                    int trueCase = cursor.getInt(6);
-                    Question question1 = new Question(id, question, caseA, caseB, caseC, caseD, trueCase);
-                    questionArrayList.add(question1);
-                }
-                cursor.close();
-                break;
+            String sql = "SELECT * FROM " + getTableName() + " ORDER BY random() ";
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(sql, null);
+            questionArrayList.clear();
+            while (cursor.moveToNext()) {
+                questionArrayList.add(new Question(cursor.getInt(0),cursor.getString(1),
+                        cursor.getString(2),cursor.getString(3),cursor.getString(4),
+                        cursor.getString(5), cursor.getInt(6)));
             }
+            cursor.close();
+
         return questionArrayList;
     }
 
