@@ -15,7 +15,10 @@ import com.ramotion.foldingcell.FoldingCell;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnExit;
     FoldingCell foldingCell;
-    TextView txtLv1,txtLv2,txtLv3,txtLv4,txtLv5;
+    static TextView txtLv1,txtLv2,txtLv3,txtLv4,txtLv5;
+    public static final String TABLE_NAME = "Question";
+    static String table;
+    static int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtLv4 = findViewById(R.id.txtLv4);
         txtLv5 = findViewById(R.id.txtLv5);
     }
-
     private void addEvents() {
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        
+
         foldingCell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+
+        id = v.getId();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage("Bạn đã sẵn sàng bắt đầu trò chơi?");
 
@@ -97,6 +102,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public static String getTableName(){
+        switch (id){
+            case R.id.txtLv1:
+                table = TABLE_NAME + 1 + "";
+                break;
+            case R.id.txtLv2:
+                table = TABLE_NAME + 2 + "";
+                break;
+            case R.id.txtLv3:
+                table = TABLE_NAME + 3 + "";
+                break;
+            case R.id.txtLv4:
+                table = TABLE_NAME + 4 + "";
+                break;
+            case R.id.txtLv5:
+                table = TABLE_NAME + 5 + "";
+                break;
+        }
+        return table;
     }
 
     @Override
