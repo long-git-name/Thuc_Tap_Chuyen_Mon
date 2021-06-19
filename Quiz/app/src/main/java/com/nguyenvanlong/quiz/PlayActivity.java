@@ -152,6 +152,12 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                                     LoadQuestion(listQuestions.get(count));
                                 }
                             },1000);
+                        }else {
+                            try {
+                                gameOver(1000,"Chúc mừng bạn ","Bạn đã hoàn thành "+ listQuestions.size() + " câu.");
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
 
@@ -217,5 +223,4 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         });
         dialog.show();
     }
-
 }
