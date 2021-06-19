@@ -17,11 +17,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import static com.nguyenvanlong.quiz.MainActivity.getTableName;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "question.sqlite";
     private static String DB_PATH ="";
+    private static String table;
     private final Context myContext;
     public static final String TABLE_NAME="Question";
     public static SQLiteDatabase database = null;
@@ -86,6 +86,27 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
 
         return questionArrayList;
+    }
+
+    public static String getTableName(){
+        switch (MainActivity.id){
+            case R.id.txtLv1:
+                table = TABLE_NAME + 1 + "";
+                break;
+            case R.id.txtLv2:
+                table = TABLE_NAME + 2 + "";
+                break;
+            case R.id.txtLv3:
+                table = TABLE_NAME + 3 + "";
+                break;
+            case R.id.txtLv4:
+                table = TABLE_NAME + 4 + "";
+                break;
+            case R.id.txtLv5:
+                table = TABLE_NAME + 5 + "";
+                break;
+        }
+        return table;
     }
 
     @Override
