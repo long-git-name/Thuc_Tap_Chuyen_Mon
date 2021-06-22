@@ -149,7 +149,11 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    LoadQuestion(listQuestions.get(count));
+                                    try {
+                                        nextQuestion("Chúc mừng", "Bạn đã trả lời đúng.");
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             },1000);
                         }else {
@@ -193,6 +197,32 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }, 1000);
         }
+    }
+    
+    public void nextQuestion(String message1, String message2) throws InterruptedException {
+
+        final Dialog dialog = new Dialog(PlayActivity.this, R.style.cust_dialog);
+        dialog.setContentView(R.layout.finish_dialog);
+
+        dialog.setTitle("Thông báo!!!");
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box);
+
+        TextView text = dialog.findViewById(R.id.txtDialog);
+        text.setText(message1);
+
+        TextView diem = dialog.findViewById(R.id.txtDiem);
+        diem.setText(message2);
+
+        dialog.setCancelable(false);
+        Button btnOk = dialog.findViewById(R.id.btn_ok_finish);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                LoadQuestion(listQuestions.get(count));
+            }
+        });
+        dialog.show();
     }
 
         //Dialog thông báo
