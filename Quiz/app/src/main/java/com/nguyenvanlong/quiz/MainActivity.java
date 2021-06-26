@@ -2,9 +2,14 @@ package com.nguyenvanlong.quiz;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -17,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FoldingCell foldingCell;
     public static TextView txtLv1,txtLv2,txtLv3,txtLv4,txtLv5;
     public static int id;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         linkViews();
         addEvents();
+        playSoundLoop(R.raw.backgroundaudio);
     }
 
     private void linkViews() {
@@ -34,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtLv3 = findViewById(R.id.txtLv3);
         txtLv4 = findViewById(R.id.txtLv4);
         txtLv5 = findViewById(R.id.txtLv5);
+
     }
     private void addEvents() {
         btnExit.setOnClickListener(new View.OnClickListener() {
@@ -94,11 +102,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(MainActivity.this, PlayActivity.class));
+                startActivity(new Intent(MainActivity.this, ChangeActivity.class));
                 dialog.dismiss();
             }
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    public void playSoundLoop(int type) {
+        mediaPlayer = MediaPlayer.create(this, type);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.setVolume(0.3f,0.3f);
+        mediaPlayer.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.stop();
     }
 }
