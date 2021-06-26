@@ -2,6 +2,7 @@ package com.nguyenvanlong.quiz;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -24,6 +25,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Question> listQuestions;
     int id1, trueCase, number, count = 0;
     CountDownTimer Timer;
+    MediaPlayer mediaPlayer;
 
     //Question question;
 
@@ -146,6 +148,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                         if(count < listQuestions.size() - 1){
                             count++;
+                            playSound(R.raw.correct_answer);
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -158,6 +161,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             },1000);
                         }else {
                             try {
+                                playSound(R.raw.victory);
                                 gameOver(1000,"Chúc mừng bạn ","Bạn đã hoàn thành "+ listQuestions.size() + " câu.");
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -167,6 +171,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                     // nếu chọn sai đáp án
                     else {
+                        playSound(R.raw.boo);
                         Timer.cancel();
                         switch (trueCase) {
                             case R.id.txtCaseA:
@@ -198,7 +203,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             }, 1000);
         }
     }
-    
+
     public void nextQuestion(String message1, String message2) throws InterruptedException {
 
         final Dialog dialog = new Dialog(PlayActivity.this, R.style.cust_dialog);
@@ -252,5 +257,9 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         dialog.show();
+    }
+    public void playSound(int type) {
+        mediaPlayer = MediaPlayer.create(this, type);
+        mediaPlayer.start();
     }
 }
