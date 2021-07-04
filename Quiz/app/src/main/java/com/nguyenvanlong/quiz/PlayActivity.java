@@ -1,14 +1,20 @@
 package com.nguyenvanlong.quiz;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -18,14 +24,21 @@ import com.nguyenvanlong.quiz.database.DBHelper;
 import com.nguyenvanlong.quiz.models.Question;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
     DBHelper dbHelper;
     TextView txtContent, txtQuestion, txtCaseA, txtCaseB, txtCaseC, txtCaseD, txtTime;
     ArrayList<Question> listQuestions;
-    int id1, trueCase, number, count = 0;
+    int id1, trueCase, number, count = 0, i;
     CountDownTimer Timer;
     MediaPlayer mediaPlayer;
+    Random random;
+    int [] sound_correct = {
+            R.raw.correct_answer,
+            R.raw.correct_answer_2,
+            R.raw.correct_answer_3
+    };
 
     //Question question;
 
@@ -50,7 +63,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         txtTime = findViewById(R.id.txtTime);
 
         listQuestions = dbHelper.getData();
-        //question = listQuestions.get(count);
+        random = new Random();
+        i = random.nextInt(3);
     }
 
     private void addEvents() {
@@ -148,7 +162,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                         if(count < listQuestions.size() - 1){
                             count++;
-                            playSound(R.raw.correct_answer);
+                            playSound(sound_correct[i]);
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -205,6 +219,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void nextQuestion(String message1, String message2) throws InterruptedException {
+        i = random.nextInt(3);
 
         final Dialog dialog = new Dialog(PlayActivity.this, R.style.cust_dialog);
         dialog.setContentView(R.layout.finish_dialog);
