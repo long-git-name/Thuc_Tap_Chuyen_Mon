@@ -1,15 +1,13 @@
 package com.nguyenvanlong.quiz;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +18,7 @@ import com.ramotion.foldingcell.FoldingCell;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnExit;
     FoldingCell foldingCell;
+    @SuppressLint("StaticFieldLeak")
     public static TextView txtLv1,txtLv2,txtLv3,txtLv4,txtLv5;
     public static int id;
     MediaPlayer mediaPlayer;
@@ -112,7 +111,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void playSoundLoop(int type) {
         mediaPlayer = MediaPlayer.create(this, type);
         mediaPlayer.setLooping(true);
-        mediaPlayer.setVolume(0.3f,0.3f);
+        mediaPlayer.setVolume(0.5f,0.5f);
+        mediaPlayer.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.pause();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
         mediaPlayer.start();
     }
 
